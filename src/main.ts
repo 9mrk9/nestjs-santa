@@ -3,11 +3,10 @@ import { AppModule } from './app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import path from 'node:path';
 import { ValidationPipe } from '@nestjs/common';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(
-    AppModule,
-  );
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   app.enableCors({
     origin: '*',
@@ -22,6 +21,15 @@ async function bootstrap() {
   app.setBaseViewsDir(path.join(__dirname, '..', '..', 'views'));
 
   app.setViewEngine('ejs');
+
+  const swaggerConfig = new DocumentBuilder()
+    .setTitle('Santa API')
+    .setVersion('1.0')
+    .build();
+
+  const documentFactory = () =>
+    SwaggerModule.createDocument(app, swaggerConfig);
+  SwaggerModule.setup('docs', app, documentFactory);
 
   await app.listen(process.env.PORT ?? 3000);
 }
