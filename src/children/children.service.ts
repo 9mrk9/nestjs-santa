@@ -49,7 +49,9 @@ export class ChildrenService {
   }
 
   async addToy(childId: number, toyId: number) {
-    const child = await this.prisma.child.findUnique({ where: { id: childId } });
+    const child = await this.prisma.child.findUnique({
+      where: { id: childId },
+    });
     const toy = await this.prisma.toy.findUnique({ where: { id: toyId } });
 
     if (!child) throw new NotFoundException('Child not found');
